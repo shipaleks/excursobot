@@ -1,0 +1,59 @@
+---
+
+description: "Implementation plan with milestones and tasks"
+alwaysApply: false
+------------------
+
+**Статус задач**
+
+* **TODO** – ещё не начата
+* **DONE** – завершена
+
+Начинайте работу с первого пункта со статусом **TODO**.
+
+---
+
+## Milestone 1 — Repository & Skeleton
+
+* TODO: Инициализировать Git‑репозиторий и добавить `.gitignore` (включая `.env*`).
+* TODO: Добавить `.env.example` с переменными `TELEGRAM_TOKEN`, `OPENAI_API_KEY`.
+* TODO: Создать `pyproject.toml` c зависимостями: `python‑telegram‑bot`, `openai`, `python‑dotenv`, `ruff`, `black`, `pytest`.
+* TODO: Сгенерировать структуру каталогов из `file_structure_document.mdc`.
+* TODO: Настроить Ruff и Black в `pyproject.toml`.
+
+## Milestone 2 — Core Bot MVP
+
+* TODO: Реализовать `src/main.py` — инициализация бота, чтение env через `dotenv`, запуск `application.run_polling()` без `asyncio.run()`.
+* TODO: Реализовать `src/bot/handlers.py` — обработка `location`, возврат заглушки.
+* TODO: Реализовать `src/services/openai_client.py` — обёртка над OpenAI (`chat.completions`).
+* TODO: Добавить unit‑тесты (`pytest`, `pytest‑asyncio`) для хендлеров и клиента.
+* TODO: Проверить локально: бот отвечает фактом на статичную локацию.
+
+## Milestone 3 — Docker & Deployment
+
+* TODO: Создать `.dockerignore` для сокращения контекста.
+* TODO: Написать `Dockerfile` (python:3.12‑slim). Критический порядок:
+
+  1. `COPY pyproject.toml ./`
+  2. `COPY src/ ./src/`
+  3. `RUN pip install --no-cache-dir -e .`
+* TODO: Добавить конфиг Railway (Dockerfile deploy).
+* TODO: Настроить workflow в `.github/workflows/ci.yml`: lint → тесты → deploy.
+
+## Milestone 4 — Live Location v1.1
+
+* TODO: Реализовать `src/scheduler/live_tasks.py` — планировщик фактов каждые 10 мин.
+* TODO: Добавить команду `/stop` для отмены live‑тасков.
+* TODO: Обновить OpenAI‑клиент для работы с перемещением.
+* TODO: Написать тесты для логики live‑тасков.
+* TODO: Обновить документацию (README, PRD).
+
+---
+
+## Acceptance Checklist
+
+*
+
+---
+
+> **@Cursor**: После завершения задачи поменяй её статус на DONE и добавь краткий маркер «// done by Cursor» с описанием, что именно сделано.
