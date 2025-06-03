@@ -5,7 +5,7 @@ Telegram bot that provides interesting facts about locations using OpenAI GPT-4.
 ## Features
 
 - 📍 **Location Facts**: Send your location and get surprising facts about nearby places
-- 🧠 **AI-Powered**: Uses OpenAI GPT-4o-mini for intelligent fact generation  
+- 🧠 **AI-Powered**: Uses OpenAI GPT-4.1-mini for intelligent fact generation  
 - 🚀 **Fast Response**: Optimized for quick fact delivery (≤280 characters)
 - 🔄 **Error Handling**: Robust error handling with fallback messages
 - 🐳 **Containerized**: Docker-ready for easy deployment
@@ -110,7 +110,7 @@ excursobot/
 
 - **Language**: Python 3.12
 - **Bot Framework**: python-telegram-bot 21.2
-- **AI Model**: OpenAI GPT-4o-mini
+- **AI Model**: OpenAI GPT-4.1-mini
 - **Testing**: pytest + pytest-asyncio
 - **Linting**: Ruff + Black
 - **Deployment**: Railway + Docker

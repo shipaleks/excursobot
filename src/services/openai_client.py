@@ -41,7 +41,7 @@ class OpenAIClient:
 
         try:
             response = await self.client.chat.completions.create(
-                model="gpt-4o-mini",  # Using latest available model
+                model="gpt-4.1-mini",  # Using gpt-4.1-mini as requested
                 messages=[
                     {
                         "role": "system",
