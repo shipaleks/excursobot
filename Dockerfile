@@ -9,15 +9,15 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy pyproject.toml first for better layer caching
-COPY pyproject.toml ./
+# Copy pyproject.toml and README.md first for better layer caching
+COPY pyproject.toml README.md ./
+
+# Copy source code (needed for editable install)
+COPY src/ ./src/
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -e .
-
-# Copy source code
-COPY src/ ./src/
 
 # Create non-root user for security
 RUN useradd --create-home --shell /bin/bash app \

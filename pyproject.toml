@@ -7,7 +7,7 @@ name = "excursobot"
 version = "1.0.0"
 description = "Telegram bot that provides interesting facts about locations using OpenAI"
 authors = [{name = "ExcursoBot Team"}]
-license = {text = "MIT"}
+license = "MIT"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
