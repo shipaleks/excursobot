@@ -13,17 +13,23 @@ logger = logging.getLogger(__name__)
 class OpenAIClient:
     """OpenAI client for generating interesting facts about locations."""
 
-    def __init__(self) -> None:
-        """Initialize OpenAI client."""
+    def __init__(self, reasoning_effort: str = "medium") -> None:
+        """
+        Initialize OpenAI client.
+
+        Args:
+            reasoning_effort: Level of reasoning ('none', 'minimal', 'low', 'medium', 'high')
+        """
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OPENAI_API_KEY environment variable is not set")
 
         self.client = openai.AsyncOpenAI(api_key=api_key)
+        self.reasoning_effort = reasoning_effort
 
     async def get_location_fact(self, latitude: float, longitude: float) -> str:
         """
-        Get an interesting fact about a location using GPT-4.1-mini.
+        Get an interesting fact about a location using GPT-5.1.
 
         Args:
             latitude: Latitude coordinate
@@ -42,7 +48,8 @@ class OpenAIClient:
 
         try:
             response = await self.client.chat.completions.create(
-                model="gpt-4.1-mini",  # Using gpt-4.1-mini as requested
+                model="gpt-5.1",
+                reasoning_effort=self.reasoning_effort,
                 messages=[
                     {
                         "role": "system",
