@@ -86,3 +86,16 @@ class LocationTracker:
     def get_session_count(self) -> int:
         """Get the number of active tracked sessions."""
         return len(self._last_fact_time)
+
+    def end_session(self, chat_id: int, message_id: int) -> None:
+        """
+        End a live location session.
+
+        Args:
+            chat_id: Telegram chat ID
+            message_id: Telegram message ID
+        """
+        key = (chat_id, message_id)
+        if key in self._last_fact_time:
+            del self._last_fact_time[key]
+            logger.info(f"Ended session for chat {chat_id}, message {message_id}")

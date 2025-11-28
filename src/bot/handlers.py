@@ -82,9 +82,18 @@ async def handle_edited_location(update: Update, context: Any) -> None:
     chat_id = update.effective_chat.id
     message_id = update.edited_message.message_id
 
+    # Check if live location has ended (live_period is None when user stops sharing)
+    if location.live_period is None:
+        logger.info(
+            f"Live location ended for chat {chat_id}, message {message_id} "
+            f"at {latitude}, {longitude}"
+        )
+        location_tracker.end_session(chat_id, message_id)
+        return
+
     logger.info(
         f"Received edited location: {latitude}, {longitude} "
-        f"(chat: {chat_id}, msg: {message_id})"
+        f"(chat: {chat_id}, msg: {message_id}, live_period: {location.live_period}s)"
     )
 
     # Check if we should send a fact based on timing
