@@ -4,7 +4,6 @@ Location tracker for managing live location updates and fact delivery timing.
 
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +20,7 @@ class LocationTracker:
         """
         self.interval_minutes = interval_minutes
         # Store last fact time for each chat_id + message_id combination
-        self._last_fact_time: Dict[Tuple[int, int], datetime] = {}
+        self._last_fact_time: dict[tuple[int, int], datetime] = {}
 
     def should_send_fact(self, chat_id: int, message_id: int) -> bool:
         """

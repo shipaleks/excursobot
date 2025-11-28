@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import openai
 import pytest
+
 from services.openai_client import OpenAIClient
 
 

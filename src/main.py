@@ -8,9 +8,10 @@ import logging
 import os
 from pathlib import Path
 
-from bot.handlers import setup_handlers
 from dotenv import load_dotenv
 from telegram.ext import Application
+
+from bot.handlers import setup_handlers
 
 # Load environment variables
 env_path = Path(__file__).parent.parent / ".env"

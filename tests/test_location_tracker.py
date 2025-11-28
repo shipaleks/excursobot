@@ -5,7 +5,6 @@ Unit tests for location tracker.
 import time
 from datetime import datetime, timedelta
 
-import pytest
 from scheduler.location_tracker import LocationTracker
 
 

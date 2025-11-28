@@ -3,7 +3,6 @@ User settings manager for bot preferences.
 """
 
 import logging
-from typing import Dict
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +17,7 @@ class UserSettings:
     def __init__(self):
         """Initialize user settings storage."""
         # Store settings per user_id
-        self._settings: Dict[int, Dict[str, str]] = {}
+        self._settings: dict[int, dict[str, str]] = {}
 
     def get_reasoning_effort(self, user_id: int) -> str:
         """

@@ -5,11 +5,12 @@ Telegram bot handlers for processing messages and commands.
 import logging
 from typing import Any
 
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
+
 from scheduler.location_tracker import LocationTracker
 from services.openai_client import OpenAIClient
 from services.user_settings import user_settings
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ async def handle_location(update: Update, context: Any) -> None:
 
     # For live locations, check if we should send a fact based on timing
     if is_live and not location_tracker.should_send_fact(chat_id, message_id):
-        logger.debug(f"Skipping fact - interval not reached")
+        logger.debug("Skipping fact - interval not reached")
         return
 
     # Send typing indicator
@@ -101,7 +102,7 @@ async def handle_edited_location(update: Update, context: Any) -> None:
 
     # Check if we should send a fact based on timing
     if not location_tracker.should_send_fact(chat_id, message_id):
-        logger.debug(f"Skipping fact - interval not reached")
+        logger.debug("Skipping fact - interval not reached")
         return
 
     # Send typing indicator
