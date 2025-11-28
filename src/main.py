@@ -41,7 +41,7 @@ def main() -> None:
     logger.info("Starting ExcursoBot...")
 
     # Start the bot
-    application.run_polling(allowed_updates=["message"])
+    application.run_polling(allowed_updates=["message", "edited_message"])
 
 
 if __name__ == "__main__":

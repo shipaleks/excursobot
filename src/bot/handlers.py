@@ -5,11 +5,15 @@ Telegram bot handlers for processing messages and commands.
 import logging
 from typing import Any
 
+from scheduler.location_tracker import LocationTracker
 from services.openai_client import OpenAIClient
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 logger = logging.getLogger(__name__)
+
+# Global location tracker instance
+location_tracker = LocationTracker(interval_minutes=10)
 
 
 async def start(update: Update, context: Any) -> None:
@@ -31,12 +35,24 @@ async def handle_location(update: Update, context: Any) -> None:
     location = update.message.location
     latitude = location.latitude
     longitude = location.longitude
+    chat_id = update.effective_chat.id
+    message_id = update.message.message_id
 
-    logger.info(f"Received location: {latitude}, {longitude}")
+    # Check if this is a live location
+    is_live = location.live_period is not None
+    logger.info(
+        f"Received location: {latitude}, {longitude} "
+        f"(live: {is_live}, chat: {chat_id}, msg: {message_id})"
+    )
+
+    # For live locations, check if we should send a fact based on timing
+    if is_live and not location_tracker.should_send_fact(chat_id, message_id):
+        logger.debug(f"Skipping fact - interval not reached")
+        return
 
     # Send typing indicator
     await context.bot.send_chat_action(
-        chat_id=update.effective_chat.id, action="typing"
+        chat_id=chat_id, action="typing"
     )
 
     try:
@@ -53,6 +69,49 @@ async def handle_location(update: Update, context: Any) -> None:
             "о данной локации. Попробуйте еще раз."
         )
         await update.message.reply_text(error_message)
+
+
+async def handle_edited_location(update: Update, context: Any) -> None:
+    """Handle edited location messages (live location updates)."""
+    if not update.edited_message or not update.edited_message.location:
+        return
+
+    location = update.edited_message.location
+    latitude = location.latitude
+    longitude = location.longitude
+    chat_id = update.effective_chat.id
+    message_id = update.edited_message.message_id
+
+    logger.info(
+        f"Received edited location: {latitude}, {longitude} "
+        f"(chat: {chat_id}, msg: {message_id})"
+    )
+
+    # Check if we should send a fact based on timing
+    if not location_tracker.should_send_fact(chat_id, message_id):
+        logger.debug(f"Skipping fact - interval not reached")
+        return
+
+    # Send typing indicator
+    await context.bot.send_chat_action(
+        chat_id=chat_id, action="typing"
+    )
+
+    try:
+        # Get interesting fact from OpenAI
+        openai_client = OpenAIClient()
+        fact = await openai_client.get_location_fact(latitude, longitude)
+
+        # Reply to the original message
+        await context.bot.send_message(chat_id=chat_id, text=fact)
+
+    except Exception as e:
+        logger.error(f"Error getting location fact for edited location: {e}")
+        error_message = (
+            "😔 Извините, произошла ошибка при получении информации "
+            "о данной локации. Попробуйте еще раз."
+        )
+        await context.bot.send_message(chat_id=chat_id, text=error_message)
 
 
 async def help_command(update: Update, context: Any) -> None:
@@ -74,7 +133,12 @@ def setup_handlers(application: Application) -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
 
-    # Location handler
+    # Location handlers
     application.add_handler(MessageHandler(filters.LOCATION, handle_location))
+
+    # Edited message handler for live location updates
+    application.add_handler(
+        MessageHandler(filters.LOCATION & filters.UpdateType.EDITED_MESSAGE, handle_edited_location)
+    )
 
     logger.info("Bot handlers setup completed")
