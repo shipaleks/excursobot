@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import openai
 import pytest
+
 from services.openai_client import OpenAIClient
 
 
@@ -54,7 +55,8 @@ async def test_get_location_fact_success(mock_openai_response):
             mock_chat.completions.create.assert_called_once()
             call_kwargs = mock_chat.completions.create.call_args.kwargs
 
-            assert call_kwargs["model"] == "gpt-4.1-mini"
+            assert call_kwargs["model"] == "gpt-5.1"
+            assert call_kwargs["reasoning_effort"] == "medium"  # Default level
             assert call_kwargs["temperature"] == 0.8
             assert call_kwargs["max_tokens"] == 120
             assert call_kwargs["timeout"] == 30.0

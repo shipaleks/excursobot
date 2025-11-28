@@ -5,7 +5,6 @@ Unit tests for location tracker.
 import time
 from datetime import datetime, timedelta
 
-import pytest
 from scheduler.location_tracker import LocationTracker
 
 
@@ -94,3 +93,32 @@ def test_location_tracker_cleanup():
 
     # Old session should be removed
     assert tracker.get_session_count() == 1
+
+
+def test_location_tracker_end_session():
+    """Test ending a session manually."""
+    tracker = LocationTracker(interval_minutes=10)
+
+    # Create a session
+    tracker.should_send_fact(chat_id=123, message_id=456)
+    assert tracker.get_session_count() == 1
+
+    # End the session
+    tracker.end_session(chat_id=123, message_id=456)
+    assert tracker.get_session_count() == 0
+
+    # Ending non-existent session should not raise error
+    tracker.end_session(chat_id=999, message_id=999)
+    assert tracker.get_session_count() == 0
+
+
+def test_location_tracker_end_session_allows_new():
+    """Test that ending a session allows creating a new one."""
+    tracker = LocationTracker(interval_minutes=10)
+
+    # Create and end a session
+    tracker.should_send_fact(chat_id=123, message_id=456)
+    tracker.end_session(chat_id=123, message_id=456)
+
+    # Should be able to create a new session with same IDs
+    assert tracker.should_send_fact(chat_id=123, message_id=456) is True

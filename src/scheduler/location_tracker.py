@@ -4,7 +4,6 @@ Location tracker for managing live location updates and fact delivery timing.
 
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +20,7 @@ class LocationTracker:
         """
         self.interval_minutes = interval_minutes
         # Store last fact time for each chat_id + message_id combination
-        self._last_fact_time: Dict[Tuple[int, int], datetime] = {}
+        self._last_fact_time: dict[tuple[int, int], datetime] = {}
 
     def should_send_fact(self, chat_id: int, message_id: int) -> bool:
         """
@@ -86,3 +85,16 @@ class LocationTracker:
     def get_session_count(self) -> int:
         """Get the number of active tracked sessions."""
         return len(self._last_fact_time)
+
+    def end_session(self, chat_id: int, message_id: int) -> None:
+        """
+        End a live location session.
+
+        Args:
+            chat_id: Telegram chat ID
+            message_id: Telegram message ID
+        """
+        key = (chat_id, message_id)
+        if key in self._last_fact_time:
+            del self._last_fact_time[key]
+            logger.info(f"Ended session for chat {chat_id}, message {message_id}")

@@ -5,9 +5,10 @@ Unit tests for bot handlers.
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from bot.handlers import handle_location, help_command, setup_handlers, start
 from telegram import Chat, Location, Message, Update
 from telegram.ext import Application
+
+from bot.handlers import handle_location, help_command, setup_handlers, start
 
 
 @pytest.fixture
