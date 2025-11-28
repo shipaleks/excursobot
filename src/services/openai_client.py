@@ -33,10 +33,11 @@ class OpenAIClient:
             Interesting fact about the location (≤280 characters)
         """
         prompt = (
-            f"Given coordinates {latitude}, {longitude}, return one surprising "
-            f"fact about any landmark, historical event, or interesting place "
-            f"within 1 km radius. Keep it under 280 characters and write in Russian. "
-            f"Make it engaging and surprising for travelers."
+            f"Coordinates: {latitude}, {longitude}\n\n"
+            f"Find the CLOSEST landmark, building, street, or historical site within 200 meters. "
+            f"Return ONE surprising fact about it in Russian (max 280 chars). "
+            f"Be specific and mention the place name. Focus on very nearby locations only. "
+            f"If nothing interesting within 200m, mention the neighborhood/district instead."
         )
 
         try:
@@ -46,9 +47,11 @@ class OpenAIClient:
                     {
                         "role": "system",
                         "content": (
-                            "You are an expert travel guide who knows fascinating "
-                            "facts about places around the world. Always respond "
-                            "in Russian with engaging, surprising facts."
+                            "You are a precise local tour guide with expert knowledge of nearby landmarks. "
+                            "Given GPS coordinates, you identify the CLOSEST interesting place within 200 meters. "
+                            "You prioritize proximity over fame - a nearby statue is better than a distant cathedral. "
+                            "Always respond in Russian with specific, engaging facts. "
+                            "Include the place name and be accurate about distance."
                         ),
                     },
                     {"role": "user", "content": prompt},
